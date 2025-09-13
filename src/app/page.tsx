@@ -75,11 +75,13 @@ export default function HomePage() {
 
     const handleAddTask = (task: Omit<Task, 'id' | 'createdAt' | 'completed'>) => {
         addTask(task);
+        setIsFormOpen(false);
     };
 
   const handleEditTask = (updatedTask: Task) => {
     updateTask(updatedTask);
     setEditingTask(null);
+    setIsFormOpen(false);
   };
 
   const handleDeleteTask = (taskId: string) => {
@@ -101,6 +103,15 @@ export default function HomePage() {
   };
   
   const activeTasks = tasks.filter(task => !task.completed && filter[task.category]);
+  
+  const handleSubmit = (data: Task | Omit<Task, 'id' | 'createdAt' | 'completed'>) => {
+      if ('id' in data) {
+          handleEditTask(data);
+      } else {
+          handleAddTask(data);
+      }
+  };
+
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -199,7 +210,7 @@ export default function HomePage() {
         <TaskForm
             isOpen={isFormOpen}
             setIsOpen={setIsFormOpen}
-            onSubmit={editingTask ? handleEditTask : handleAddTask}
+            onSubmit={handleSubmit}
             task={editingTask}
         />
     </div>
